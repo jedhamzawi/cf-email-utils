@@ -2,7 +2,6 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-pub(crate) mod delete;
 pub(crate) mod list;
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -28,7 +28,7 @@ pub(crate) async fn handle(args: &Args, cmd: &ImportCmd) -> Result<(), Error> {
             })?
         }
     };
-    import_aliases(aliases, &args, cmd)
+    import_aliases(aliases, args, cmd)
         .await
         .map_err(|err| Error::new(format!("Failed to create aliases in Cloudflare! {err}")))?;
     Ok(())
@@ -47,9 +47,9 @@ fn get_aliases_sl(cmd: &ImportCmd) -> Result<HashMap<String, String>, Error> {
     let headers = csv_reader
         .headers()
         .map_err(|_| Error::new("Export CSV has no headers!"))?;
-    let alias_index = get_header_index(&headers, SL_ALIAS_CSV_HEADER)?;
-    let enabled_index = get_header_index(&headers, SL_ENABLED_CSV_HEADER)?;
-    let note_index = get_header_index(&headers, SL_NOTE_CSV_HEADER)?;
+    let alias_index = get_header_index(headers, SL_ALIAS_CSV_HEADER)?;
+    let enabled_index = get_header_index(headers, SL_ENABLED_CSV_HEADER)?;
+    let note_index = get_header_index(headers, SL_NOTE_CSV_HEADER)?;
     let aliases = csv_reader
         .into_records()
         .collect::<Result<Vec<csv::StringRecord>, csv::Error>>()
@@ -95,8 +95,8 @@ fn get_aliases_bw(
             let headers = csv_reader
                 .headers()
                 .map_err(|_| Error::new("Export CSV has no headers!"))?;
-            let login_index = get_header_index(&headers, BW_USERNAME_CSV_HEADER)?;
-            let fields_index = get_header_index(&headers, BW_FIELDS_CSV_HEADER)?;
+            let login_index = get_header_index(headers, BW_USERNAME_CSV_HEADER)?;
+            let fields_index = get_header_index(headers, BW_FIELDS_CSV_HEADER)?;
             for record in csv_reader
                 .into_records()
                 .collect::<Result<Vec<csv::StringRecord>, csv::Error>>()
@@ -146,7 +146,7 @@ async fn import_aliases(
             .expect("Invalid Cloudflare API key"),
     );
     let domain = if cmd.domain.starts_with('@') {
-        cmd.domain.chars().skip(1).into_iter().collect()
+        cmd.domain.chars().skip(1).collect()
     } else {
         cmd.domain.clone()
     };
