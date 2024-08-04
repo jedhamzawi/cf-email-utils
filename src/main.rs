@@ -15,4 +15,8 @@ async fn main() {
         Subcommand::Import(cmd) => handlers::import::handle(&args, cmd).await,
         Subcommand::Delete(cmd) => handlers::delete::handle(&args, cmd).await,
     };
+    if let Err(err) = result {
+        eprintln!("{err}");
+        std::process::exit(0);
+    }
 }

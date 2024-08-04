@@ -17,12 +17,15 @@ pub(crate) struct RoutingRule {
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub priority: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct RouteAction {
     pub r#type: RouteActionType,
-    pub value: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<Vec<String>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -35,9 +38,11 @@ pub(crate) enum RouteActionType {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct RouteMatcher {
-    pub field: RouteMatcherField,
     pub r#type: RouteMatcherType,
-    pub value: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub field: Option<RouteMatcherField>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -46,56 +51,9 @@ pub(crate) enum RouteMatcherField {
     To,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub(crate) enum RouteMatcherType {
     Literal,
+    All,
 }
-
-// "result": [
-
-//   {
-
-//     "actions": [
-
-//       {
-
-//         "type": "forward",
-
-//         "value": [
-
-//           "destinationaddress@example.net"
-
-//         ]
-
-//       }
-
-//     ],
-
-//     "enabled": true,
-
-//     "id": "a7e6fb77503c41d8a7f3113c6918f10c",
-
-//     "matchers": [
-
-//       {
-
-//         "field": "to",
-
-//         "type": "literal",
-
-//         "value": "test@example.com"
-
-//       }
-
-//     ],
-
-//     "name": "Send to user@example.net rule.",
-
-//     "priority": 0,
-
-//     "tag": "a7e6fb77503c41d8a7f3113c6918f10c"
-
-//   }
-
-// ],
